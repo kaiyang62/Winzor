@@ -7,20 +7,72 @@
     <base href="/" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="css/tailwind.css" rel="stylesheet" />
+
+    <script>
+        window.singleSpaLoaded = false;
+    </script>
+
+    <script src="https://unpkg.com/single-spa@5.9.0/lib/umd/single-spa.min.js"></script>
+
+    <script>
+        if (typeof singleSpa !== 'undefined') {
+            console.log("singleSpa loaded successfully from CDN");
+            window.singleSpaLoaded = true;
+        } else {
+            console.error("CDN load failed, defining singleSpa locally");
+            window.singleSpa = {
+                registerApplication: function (name, loadApp, activeWhen) {
+                    console.log("Registered app:", name);
+                    window.singleSpaApps = window.singleSpaApps || [];
+                    window.singleSpaApps.push({ name, loadApp, activeWhen });
+                },
+                start: function () {
+                    console.log("Single-SPA started (local implementation)");
+                }
+            };
+            window.singleSpaLoaded = true;
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
+
+    <script type="systemjs-importmap">
+        {
+          "imports": {
+            "react": "https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.production.min.js",
+            "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.production.min.js",
+            "@winzor/root-config": "/js/root-config.js",
+            "@winzor/react-app": "/js/react-app.js"
+          }
+        }
+    </script>
 </head>
 
 <body>
+    <div id="app">Loading...</div>
 
-<div id="app">Loading...</div>
+    <div id="blazor-error-ui" data-nosnippet>
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+    <script src="_framework/blazor.webview.js"></script>
 
-<script src="_framework/blazor.webview.js"></script>
+    <div id="single-spa-application:@winzor/react-app"></div>
 
+    <script>
+        window.addEventListener('load', function () {
+            console.log("Page loaded, singleSpa status:", window.singleSpaLoaded);
+
+            if (window.singleSpaLoaded) {
+                System.import('@winzor/root-config')
+                    .catch(err => console.error('Error loading root-config:', err));
+            } else {
+                console.error("SingleSPA is still not available globally");
+            }
+        });
+    </script>
 </body>
-
 </html>
