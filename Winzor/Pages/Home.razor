@@ -1,0 +1,22 @@
+﻿@page "/"
+
+@inject VolumeService VolumeService;
+
+<h3 class="text-3xl font-bold underline text-blue-600">Home</h3>
+<h1>Volume is @_currentVolume.ToString("F")</h1>
+<button class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 active:bg-blue-700 transition-colors duration-200 shadow hover:shadow-md active:shadow-inner mr-2" @onclick="RefreshVolume">Refresh Volume</button>
+
+@code {
+    private float _currentVolume = 0;
+
+    private void RefreshVolume()
+    {
+        _currentVolume = VolumeService.GetVolume();
+    }
+
+    protected override void OnInitialized()
+    {
+        _currentVolume = VolumeService.GetVolume();
+        base.OnInitialized();
+    }
+}

@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RazorLangVersion>latest</RazorLangVersion>
+		<RazorCompileOnBuild>true</RazorCompileOnBuild>
+		<RazorCompileOnPublish>true</RazorCompileOnPublish>
+		<RootNamespace>Winzor</RootNamespace>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="8.0.100" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <None Update="VolumeControl.dll">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+	
+	<Target Name="TainwindBuild" BeforeTargets="Build">
+		<Exec Command="npm run build:tailwindcss" WorkingDirectory="$(ProjectDir)" />
+	</Target>
+</Project>
